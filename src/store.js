@@ -8,9 +8,7 @@ let Vue // bind on install
 export class Store {
   // options 外部传入的options
   constructor(options = {}) {
-    // Auto install if it is not done yet and `window` has `Vue`.
-    // To allow users to avoid auto-installation in some cases,
-    // this code should be placed here. See #731
+
 
     if (!Vue && typeof window !== 'undefined' && window.Vue) {
       install(window.Vue)
