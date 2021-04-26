@@ -24,3 +24,7 @@ export {
   createNamespacedHelpers,
   createLogger
 }
+
+
+// export let a = 1
+// 下面修改a   导出的是变量a   值也会改变

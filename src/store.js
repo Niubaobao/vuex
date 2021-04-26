@@ -6,10 +6,12 @@ import { forEachValue, isObject, isPromise, assert, partial } from './util'
 let Vue // bind on install
 
 export class Store {
+  // options 外部传入的options
   constructor(options = {}) {
     // Auto install if it is not done yet and `window` has `Vue`.
     // To allow users to avoid auto-installation in some cases,
     // this code should be placed here. See #731
+
     if (!Vue && typeof window !== 'undefined' && window.Vue) {
       install(window.Vue)
     }
@@ -26,20 +28,23 @@ export class Store {
     } = options
 
     // store internal state
-    this._committing = false
-    this._actions = Object.create(null)
-    this._actionSubscribers = []
-    this._mutations = Object.create(null)
-    this._wrappedGetters = Object.create(null)
-    this._modules = new ModuleCollection(options)
-    this._modulesNamespaceMap = Object.create(null)
-    this._subscribers = []
-    this._watcherVM = new Vue()
+    this._committing = false //  是否在进行提交状态标识
+    this._actions = Object.create(null)  //acitons 操作对象
+    this._actionSubscribers = [] // action 订阅列表
+    this._mutations = Object.create(null) // mutations操作对象
+    this._wrappedGetters = Object.create(null) // 封装后的 getters 集合对象
+    this._modules = new ModuleCollection(options) // vuex 支持 store 分模块传入，存储分析后的 modules
+    this._modulesNamespaceMap = Object.create(null) // 模块命名空间 map
+    this._subscribers = [] // 订阅函数集合
+    this._watcherVM = new Vue() // Vue 组件用于 watch 监视变化
     this._makeLocalGettersCache = Object.create(null)
 
+
     // bind commit and dispatch to self
-    const store = this
+    const store = this // 替换 this 中的 dispatch, commit 方法，将 this 指向 store
     const { dispatch, commit } = this
+
+    // 重写 dispatch commit
     this.dispatch = function boundDispatch(type, payload) {
       return dispatch.call(store, type, payload)
     }
@@ -536,6 +541,9 @@ function unifyObjectStyle(type, payload, options) {
   return { type, payload, options }
 }
 
+
+/// 插件要首先执行这个方法
+/// 接受的第一个参数是 vue
 export function install(_Vue) {
   // 如果调用过就不执行 在开发环境中报错
   if (Vue && _Vue === Vue) {

@@ -24,6 +24,7 @@ export default function (Vue) {
   function vuexInit() {
     const options = this.$options
     // store injection
+    // 根组件是否有store属性  如果有挂载到$store  如果没有就去父组件找
     if (options.store) {
       this.$store = typeof options.store === 'function'
         ? options.store()
